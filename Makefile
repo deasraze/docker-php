@@ -1,10 +1,12 @@
 init: docker-down-clear \
-	docker-clear \
+	project-clear \
 	docker-pull docker-build docker-up \
-	docker-init
+	project-init
 up: docker-up
 down: docker-down
 restart: down up
+
+update-deps: composer-update
 
 docker-up:
 	docker-compose up -d
@@ -16,16 +18,18 @@ docker-down-clear:
 	docker-compose down -v --remove-orphans
 
 docker-pull:
-	docker-compose pull --include-deps
+	docker-compose pull
 
 docker-build:
-	docker-compose build
+	docker-compose build --pull
 
-docker-clear:
+project-clear:
 	docker run --rm -v ${CURDIR}:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/*'
-	docker run --rm -v ${CURDIR}:/app -w /app alpine sh -c 'rm -rf vendor'
 
-docker-init: composer-install
+project-init: composer-install
 
 composer-install:
 	docker-compose run --rm php-cli composer install
+
+composer-update:
+	docker-compose run --rm php-cli composer update
