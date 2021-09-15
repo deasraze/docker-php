@@ -1,2 +1,6 @@
-# docker-with-php
-Docker running Nginx, PHP-FPM
+# docker-php
+- Nginx
+- PHP-FPM
+- PHP-CLI
+- PostgreSQL
+- XDebug
