@@ -6,22 +6,22 @@ up: docker-up
 down: docker-down
 restart: down up
 
-update-deps: composer-update
+update-deps: api-composer-update
 
 docker-up:
-	docker-compose up -d
+	docker compose up -d
 
 docker-down:
-	docker-compose down --remove-orphans
+	docker compose down --remove-orphans
 
 docker-down-clear:
-	docker-compose down -v --remove-orphans
+	docker compose down -v --remove-orphans
 
 docker-pull:
-	docker-compose pull
+	docker compose pull
 
 docker-build:
-	docker-compose build --pull
+	docker compose build --pull
 
 project-clear:
 	docker run --rm -v ${PWD}:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/*'
@@ -29,7 +29,7 @@ project-clear:
 project-init: api-composer-install
 
 api-composer-install:
-	docker-compose run --rm api-php-cli composer install
+	docker compose run --rm api-php-cli composer install
 
 api-composer-update:
-	docker-compose run --rm api-php-cli composer update
+	docker compose run --rm api-php-cli composer update
