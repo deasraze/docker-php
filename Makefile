@@ -1,7 +1,7 @@
 init: docker-down-clear \
 	project-clear \
 	docker-pull docker-build docker-up \
-	project-init
+	#project-init
 up: docker-up
 down: docker-down
 restart: down up
@@ -24,12 +24,12 @@ docker-build:
 	docker-compose build --pull
 
 project-clear:
-	docker run --rm -v ${CURDIR}:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/*'
+	docker run --rm -v ${PWD}:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/*'
 
-project-init: composer-install
+project-init: api-composer-install
 
-composer-install:
-	docker-compose run --rm php-cli composer install
+api-composer-install:
+	docker-compose run --rm api-php-cli composer install
 
-composer-update:
-	docker-compose run --rm php-cli composer update
+api-composer-update:
+	docker-compose run --rm api-php-cli composer update
