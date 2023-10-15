@@ -1,10 +1,13 @@
 init: docker-down-clear \
-	project-clear \
+	api-clear \
 	docker-pull docker-build docker-up \
-	#project-init
+	#api-init
 up: docker-up
 down: docker-down
 restart: down up
+check: lint analyze
+lint: api-lint
+analyze: api-analyze
 
 update-deps: api-composer-update
 
@@ -23,13 +26,26 @@ docker-pull:
 docker-build:
 	docker compose build --pull
 
-project-clear:
+api-clear:
 	docker run --rm -v ${PWD}:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/*'
 
-project-init: api-composer-install
+api-init: api-composer-install
 
 api-composer-install:
 	docker compose run --rm api-php-cli composer install
 
 api-composer-update:
 	docker compose run --rm api-php-cli composer update
+
+api-lint:
+	docker compose run --rm api-php-cli composer lint
+	docker compose run --rm api-php-cli composer php-cs-fixer fix -- --dry-run --diff
+
+api-cs-fix:
+	docker compose run --rm api-php-cli composer php-cs-fixer fix
+
+api-analyze:
+	docker-compose run --rm api-php-cli composer psalm -- --no-diff
+
+api-analyze-diff:
+	docker-compose run --rm api-php-cli composer psalm
